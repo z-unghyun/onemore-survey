@@ -70,7 +70,6 @@ select.input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 <div class="card"><div class="card-num">1</div><div><div class="card-title">기본 정보 & 사전 설문</div><div class="card-desc">약 2분 소요</div></div></div>
 <div class="card"><div class="card-num">2</div><div><div class="card-title">코스 계획 체험</div><div class="card-desc">직접 코스를 만들어보세요</div></div></div>
 <div class="card"><div class="card-num">3</div><div><div class="card-title">사용 후 피드백</div><div class="card-desc">약 3분 소요</div></div></div>
-<div class="info">중간에 나가도 데이터는 자동 저장됩니다.</div>
 </div>
 <div class="foot"><div class="foot-btns"><button class="btn btn-p" onclick="go(1)">시작하기</button></div></div>
 </div>
@@ -157,15 +156,9 @@ select.input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 </div>
 
 <script>
-// ============================================================
-// 설정
-// ============================================================
 var SHEETS_URL = "https://script.google.com/macros/s/AKfycbzPHt-RZwyF-4HCS85eqoftOocdKSLlSh-95zZCHZr_ePrqLLCri0lrl804Z58hUa0/exec";
 var PROTO_URL = "https://onemore-mvp.vercel.app/?mode=survey";
 
-// ============================================================
-// 세션
-// ============================================================
 var sid = localStorage.getItem("om_sid");
 if (!sid) {
   sid = "s-" + Date.now() + "-" + Math.random().toString(36).substr(2, 6);
@@ -173,9 +166,6 @@ if (!sid) {
 }
 var protoStart = 0;
 
-// ============================================================
-// 유효성 검사
-// ============================================================
 var VALIDATIONS = {
   1: function() {
     if (!document.getElementById("f-age").value) return "나이를 입력해주세요.";
@@ -221,22 +211,13 @@ function hideAlert(pageNum) {
   if (el) el.style.display = "none";
 }
 
-// ============================================================
-// 화면 이동
-// ============================================================
 function go(n) {
   var cur = getCurrentPage();
-
-  // 앞으로 이동할 때만 검사
   if (n > cur && VALIDATIONS[cur]) {
     var err = VALIDATIONS[cur]();
-    if (err) {
-      showAlert(cur, err);
-      return;
-    }
+    if (err) { showAlert(cur, err); return; }
     hideAlert(cur);
   }
-
   if (n === 4) {
     if (PROTO_URL) {
       var iframe = document.getElementById("proto-iframe");
@@ -244,16 +225,13 @@ function go(n) {
     }
     protoStart = Date.now();
   }
-
   document.querySelectorAll(".page").forEach(function(p) { p.classList.remove("on"); });
   document.getElementById("p" + n).classList.add("on");
   window.scrollTo(0, 0);
-
   if (n === 4) savePartial("pre");
   if (n === 5) savePartial("log");
 }
 
-// 이전 버튼은 검사 없이 이동
 function goBack(n) {
   document.querySelectorAll(".page").forEach(function(p) { p.classList.remove("on"); });
   document.getElementById("p" + n).classList.add("on");
@@ -268,9 +246,6 @@ function getCurrentPage() {
   return 0;
 }
 
-// ============================================================
-// 라디오 선택
-// ============================================================
 function pick(el) {
   var wrap = el.closest(".opts");
   wrap.querySelectorAll(".opt").forEach(function(o) { o.classList.remove("on"); });
@@ -278,16 +253,10 @@ function pick(el) {
   el.querySelector("input").checked = true;
 }
 
-// ============================================================
-// 칩 (중복선택)
-// ============================================================
 function chip(el) {
   el.classList.toggle("on");
 }
 
-// ============================================================
-// 별점
-// ============================================================
 function initStars(id) {
   var wrap = document.getElementById(id);
   for (var i = 1; i <= 5; i++) {
@@ -310,9 +279,6 @@ function initStars(id) {
 initStars("star-rec");
 initStars("star-dist");
 
-// ============================================================
-// 데이터 수집
-// ============================================================
 function getRadio(name) {
   var el = document.querySelector('input[name="' + name + '"]:checked');
   return el ? el.value : "";
@@ -354,9 +320,6 @@ function collectAll() {
   };
 }
 
-// ============================================================
-// 단계별 저장 (이탈 대비)
-// ============================================================
 function savePartial(stage) {
   try {
     var data = collectAll();
@@ -365,15 +328,9 @@ function savePartial(stage) {
   } catch(e) {}
 }
 
-// ============================================================
-// 최종 제출
-// ============================================================
 function submit() {
   var err = VALIDATIONS[6]();
-  if (err) {
-    showAlert(6, err);
-    return;
-  }
+  if (err) { showAlert(6, err); return; }
   hideAlert(6);
 
   var btn = document.getElementById("submit-btn");
@@ -403,9 +360,6 @@ function submit() {
   });
 }
 
-// ============================================================
-// 프로토타입 → 부모 통신 (postMessage 수신)
-// ============================================================
 window.addEventListener("message", function(e) {
   try {
     var msg = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
