@@ -16,7 +16,8 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-se
 .bar{height:3px;background:var(--border);border-radius:2px;margin-top:12px;overflow:hidden}
 .bar-fill{height:100%;background:var(--pk);border-radius:2px;transition:width .4s ease}
 .body{flex:1;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch}
-.foot{padding:12px 20px 24px;flex-shrink:0;display:flex;gap:10px;background:var(--bg)}
+.foot{padding:12px 20px 24px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.foot-btns{display:flex;gap:10px}
 .btn{flex:1;padding:14px;border:none;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
 .btn:active{transform:scale(.97)}
 .btn-p{background:var(--pk);color:#fff}
@@ -55,7 +56,7 @@ select.input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 .iframe-wrap iframe{flex:1;border:none;width:100%}
 .done-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
 .done-icon{font-size:48px;margin-bottom:16px}
-.alert{background:#fee;border:1px solid #fcc;border-radius:var(--r);padding:12px;font-size:12px;color:#a33;margin-bottom:12px;display:none}
+.alert{background:#fee;border:1px solid #fcc;border-radius:var(--r);padding:12px;font-size:12px;color:#a33;display:none}
 </style>
 </head>
 <body>
@@ -71,7 +72,7 @@ select.input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 <div class="card"><div class="card-num">3</div><div><div class="card-title">사용 후 피드백</div><div class="card-desc">약 3분 소요</div></div></div>
 <div class="info">중간에 나가도 데이터는 자동 저장됩니다.</div>
 </div>
-<div class="foot"><button class="btn btn-p" onclick="go(1)">시작하기</button></div>
+<div class="foot"><div class="foot-btns"><button class="btn btn-p" onclick="go(1)">시작하기</button></div></div>
 </div>
 
 <!-- ===== 1. 기초 정보 ===== -->
@@ -83,7 +84,7 @@ select.input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 <div class="group"><span class="label">성별</span><div class="opts" data-name="gender"><div class="opt" onclick="pick(this)"><div class="dot"></div>남성<input type="radio" name="gender" value="남성"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>여성<input type="radio" name="gender" value="여성"></div></div></div>
 <div class="group"><span class="label">관계</span><div class="opts" data-name="rel"><div class="opt" onclick="pick(this)"><div class="dot"></div>연인<input type="radio" name="rel" value="연인"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>친구<input type="radio" name="rel" value="친구"></div></div></div>
 </div>
-<div class="foot"><button class="btn btn-p" onclick="go(2)">다음</button></div>
+<div class="foot"><div class="alert" id="alert-p1"></div><div class="foot-btns"><button class="btn btn-p" onclick="go(2)">다음</button></div></div>
 </div>
 
 <!-- ===== 2. 사용 전 설문 (1/2) ===== -->
@@ -96,7 +97,7 @@ select.input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 <div class="group"><span class="label">1회당 평균 소비 비용</span><div class="opts" data-name="budget"><div class="opt" onclick="pick(this)"><div class="dot"></div>3만원 이하<input type="radio" name="budget" value="3만원 이하"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>3-5만원<input type="radio" name="budget" value="3-5만원"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>5-10만원<input type="radio" name="budget" value="5-10만원"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>10만원 이상<input type="radio" name="budget" value="10만원 이상"></div></div></div>
 <div class="group"><span class="label">코스 계획 소요 시간</span><div class="opts" data-name="plantime"><div class="opt" onclick="pick(this)"><div class="dot"></div>10분 이내<input type="radio" name="plantime" value="10분 이내"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>10-30분<input type="radio" name="plantime" value="10-30분"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>30분-1시간<input type="radio" name="plantime" value="30분-1시간"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>1시간 이상<input type="radio" name="plantime" value="1시간 이상"></div></div></div>
 </div>
-<div class="foot"><button class="btn btn-s" onclick="go(1)">이전</button><button class="btn btn-p" onclick="go(3)">다음</button></div>
+<div class="foot"><div class="alert" id="alert-p2"></div><div class="foot-btns"><button class="btn btn-s" onclick="goBack(1)">이전</button><button class="btn btn-p" onclick="go(3)">다음</button></div></div>
 </div>
 
 <!-- ===== 3. 사용 전 설문 (2/2) ===== -->
@@ -107,7 +108,7 @@ select.input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 <hr class="sep">
 <div class="group"><span class="label">코스 계획할 때 가장 중요한 것은? (중복선택)</span><div class="chips" data-name="prio"><div class="chip" onclick="chip(this)">가격/할인</div><div class="chip" onclick="chip(this)">맛/음식 품질</div><div class="chip" onclick="chip(this)">분위기/감성</div><div class="chip" onclick="chip(this)">장소 간 거리</div><div class="chip" onclick="chip(this)">계획 시간 절약</div><div class="chip" onclick="chip(this)">새로운 곳 발견</div></div></div>
 </div>
-<div class="foot"><button class="btn btn-s" onclick="go(2)">이전</button><button class="btn btn-p" onclick="go(4)">코스 계획 체험하기</button></div>
+<div class="foot"><div class="alert" id="alert-p3"></div><div class="foot-btns"><button class="btn btn-s" onclick="goBack(2)">이전</button><button class="btn btn-p" onclick="go(4)">코스 계획 체험하기</button></div></div>
 </div>
 
 <!-- ===== 4. 프로토타입 (iframe) ===== -->
@@ -116,7 +117,7 @@ select.input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 <div class="iframe-wrap">
 <iframe id="proto-iframe" src="about:blank" allow="geolocation"></iframe>
 </div>
-<div class="foot"><button class="btn btn-p" onclick="go(5)">사용 완료 → 피드백으로</button></div>
+<div class="foot"><div class="foot-btns"><button class="btn btn-p" onclick="go(5)">사용 완료 → 피드백으로</button></div></div>
 </div>
 
 <!-- ===== 5. 사용 후 설문 (1/2) ===== -->
@@ -128,7 +129,7 @@ select.input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 <div class="group"><span class="label">추천된 장소들이 마음에 들었나요?</span><div class="stars" id="star-rec" data-val="0"></div></div>
 <div class="group"><span class="label">도보 거리 표시가 도움이 됐나요?</span><div class="stars" id="star-dist" data-val="0"></div></div>
 </div>
-<div class="foot"><button class="btn btn-s" onclick="go(4)">이전</button><button class="btn btn-p" onclick="go(6)">다음</button></div>
+<div class="foot"><div class="alert" id="alert-p5"></div><div class="foot-btns"><button class="btn btn-s" onclick="goBack(4)">이전</button><button class="btn btn-p" onclick="go(6)">다음</button></div></div>
 </div>
 
 <!-- ===== 6. 사용 후 설문 (2/2) ===== -->
@@ -139,10 +140,10 @@ select.input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 <div class="group"><span class="label">데이트가 아닌 단순 약속(친구, 모임 등)에도 사용할 의향이 있나요?</span><div class="opts" data-name="nondate"><div class="opt" onclick="pick(this)"><div class="dot"></div>네<input type="radio" name="nondate" value="YES"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>데이트 아니면 사용 안 할 것 같아요<input type="radio" name="nondate" value="데이트 아니면 NO"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>잘 모르겠어요<input type="radio" name="nondate" value="잘모름"></div></div></div>
 <div class="group"><span class="label">코스에 장소를 추가할수록 할인이 추가된다면, 추가할 의향은?</span><div class="opts" data-name="addplace"><div class="opt" onclick="pick(this)"><div class="dot"></div>1곳만 (충분함)<input type="radio" name="addplace" value="1곳만"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>2곳까지<input type="radio" name="addplace" value="2곳까지"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>3곳까지<input type="radio" name="addplace" value="3곳까지"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>4곳 이상<input type="radio" name="addplace" value="4곳 이상"></div></div></div>
 <hr class="sep">
-<div class="group"><span class="label">좋았던 점</span><textarea class="ta" id="f-good" placeholder="자유롭게 적어주세요 (선택)"></textarea></div>
-<div class="group"><span class="label">개선할 점</span><textarea class="ta" id="f-bad" placeholder="자유롭게 적어주세요 (선택)"></textarea></div>
+<div class="group"><span class="label">좋았던 점 (선택)</span><textarea class="ta" id="f-good" placeholder="자유롭게 적어주세요"></textarea></div>
+<div class="group"><span class="label">개선할 점 (선택)</span><textarea class="ta" id="f-bad" placeholder="자유롭게 적어주세요"></textarea></div>
 </div>
-<div class="foot"><button class="btn btn-s" onclick="go(5)">이전</button><button class="btn btn-p" id="submit-btn" onclick="submit()">완료</button></div>
+<div class="foot"><div class="alert" id="alert-p6"></div><div class="foot-btns"><button class="btn btn-s" onclick="goBack(5)">이전</button><button class="btn btn-p" id="submit-btn" onclick="submit()">완료</button></div></div>
 </div>
 
 <!-- ===== 7. 완료 ===== -->
@@ -160,10 +161,7 @@ select.input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w
 // 설정
 // ============================================================
 var SHEETS_URL = "https://script.google.com/macros/s/AKfycbzPHt-RZwyF-4HCS85eqoftOocdKSLlSh-95zZCHZr_ePrqLLCri0lrl804Z58hUa0/exec";
-
-// ⬇️ 프로토타입 URL을 여기에 입력하세요
 var PROTO_URL = "https://onemore-mvp.vercel.app/?mode=survey";
-// 예: "https://z-unghyun.github.io/onemore-mvp/"
 
 // ============================================================
 // 세션
@@ -176,10 +174,69 @@ if (!sid) {
 var protoStart = 0;
 
 // ============================================================
+// 유효성 검사
+// ============================================================
+var VALIDATIONS = {
+  1: function() {
+    if (!document.getElementById("f-age").value) return "나이를 입력해주세요.";
+    if (!getRadio("gender")) return "성별을 선택해주세요.";
+    if (!getRadio("rel")) return "관계를 선택해주세요.";
+    return null;
+  },
+  2: function() {
+    if (!getRadio("freq")) return "데이트/약속 횟수를 선택해주세요.";
+    if (!getRadio("visit")) return "평균 방문 장소 개수를 선택해주세요.";
+    if (!getRadio("budget")) return "평균 소비 비용을 선택해주세요.";
+    if (!getRadio("plantime")) return "코스 계획 소요 시간을 선택해주세요.";
+    return null;
+  },
+  3: function() {
+    if (!document.querySelectorAll('[data-name="diff"] .chip.on').length) return "어려운 점을 하나 이상 선택해주세요.";
+    if (!document.querySelectorAll('[data-name="prio"] .chip.on').length) return "중요한 것을 하나 이상 선택해주세요.";
+    return null;
+  },
+  5: function() {
+    if (!getRadio("posttime")) return "코스 계획 소요 시간을 선택해주세요.";
+    if (document.getElementById("star-rec").getAttribute("data-val") === "0") return "추천 장소 만족도 별점을 선택해주세요.";
+    if (document.getElementById("star-dist").getAttribute("data-val") === "0") return "도보 거리 표시 도움도 별점을 선택해주세요.";
+    return null;
+  },
+  6: function() {
+    if (!getRadio("nodiscount")) return "할인 서비스 관련 의향을 선택해주세요.";
+    if (!getRadio("nondate")) return "데이트 외 사용 의향을 선택해주세요.";
+    if (!getRadio("addplace")) return "장소 추가 의향을 선택해주세요.";
+    return null;
+  }
+};
+
+function showAlert(pageNum, msg) {
+  var el = document.getElementById("alert-p" + pageNum);
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = "block";
+}
+
+function hideAlert(pageNum) {
+  var el = document.getElementById("alert-p" + pageNum);
+  if (el) el.style.display = "none";
+}
+
+// ============================================================
 // 화면 이동
 // ============================================================
 function go(n) {
-  // 프로토타입 진입 시 iframe 로드 & 시간 기록
+  var cur = getCurrentPage();
+
+  // 앞으로 이동할 때만 검사
+  if (n > cur && VALIDATIONS[cur]) {
+    var err = VALIDATIONS[cur]();
+    if (err) {
+      showAlert(cur, err);
+      return;
+    }
+    hideAlert(cur);
+  }
+
   if (n === 4) {
     if (PROTO_URL) {
       var iframe = document.getElementById("proto-iframe");
@@ -192,9 +249,23 @@ function go(n) {
   document.getElementById("p" + n).classList.add("on");
   window.scrollTo(0, 0);
 
-  // 단계별 자동 저장
   if (n === 4) savePartial("pre");
   if (n === 5) savePartial("log");
+}
+
+// 이전 버튼은 검사 없이 이동
+function goBack(n) {
+  document.querySelectorAll(".page").forEach(function(p) { p.classList.remove("on"); });
+  document.getElementById("p" + n).classList.add("on");
+  window.scrollTo(0, 0);
+}
+
+function getCurrentPage() {
+  var pages = document.querySelectorAll(".page");
+  for (var i = 0; i < pages.length; i++) {
+    if (pages[i].classList.contains("on")) return i;
+  }
+  return 0;
 }
 
 // ============================================================
@@ -256,27 +327,22 @@ function getChips(name) {
 
 function collectAll() {
   var usageTime = protoStart ? Math.round((Date.now() - protoStart) / 1000) : 0;
-
   return {
     sessionId: sid,
-    // 기초 정보
     age: document.getElementById("f-age").value || "",
     gender: getRadio("gender"),
     relationship: getRadio("rel"),
-    // 사전 설문
     dateFrequency: getRadio("freq"),
     visitCount: getRadio("visit"),
     avgBudget: getRadio("budget"),
     planningTime: getRadio("plantime"),
     difficulties: getChips("diff"),
     priorities: getChips("prio"),
-    // 사용 중 로그 (자동)
-    log_regionSelected: "",
-    log_categoryUsed: "",
-    log_scheduleCount: "",
+    log_regionSelected: localStorage.getItem("om_log_region") || "",
+    log_categoryUsed: localStorage.getItem("om_log_category") || "",
+    log_scheduleCount: localStorage.getItem("om_log_schedule") || "",
     log_completed: "true",
     log_usageTimeSeconds: String(usageTime),
-    // 사후 설문
     post_planningTime: getRadio("posttime"),
     post_recommendationRating: document.getElementById("star-rec").getAttribute("data-val"),
     post_distanceRating: document.getElementById("star-dist").getAttribute("data-val"),
@@ -303,6 +369,13 @@ function savePartial(stage) {
 // 최종 제출
 // ============================================================
 function submit() {
+  var err = VALIDATIONS[6]();
+  if (err) {
+    showAlert(6, err);
+    return;
+  }
+  hideAlert(6);
+
   var btn = document.getElementById("submit-btn");
   btn.textContent = "저장 중...";
   btn.disabled = true;
@@ -316,11 +389,16 @@ function submit() {
   }).then(function() {
     localStorage.removeItem("om_data");
     localStorage.removeItem("om_sid");
+    localStorage.removeItem("om_log_region");
+    localStorage.removeItem("om_log_category");
+    localStorage.removeItem("om_log_schedule");
     go(7);
   }).catch(function() {
-    // no-cors라 에러처럼 보여도 실제로는 전송됨
     localStorage.removeItem("om_data");
     localStorage.removeItem("om_sid");
+    localStorage.removeItem("om_log_region");
+    localStorage.removeItem("om_log_category");
+    localStorage.removeItem("om_log_schedule");
     go(7);
   });
 }
