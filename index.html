@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>원모어 - 서비스 체험 & 설문</title>
+<style>
+:root{--pk:#ff4b7e;--pk-light:rgba(255,75,126,.05);--pk-bg:rgba(255,75,126,.08);--bg:#f7f7fa;--card:#fff;--border:#e8e8ec;--txt:#1a1a1a;--txt2:#888;--r:10px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;min-height:100dvh}
+.page{display:none;flex-direction:column;min-height:100vh;min-height:100dvh}
+.page.on{display:flex}
+.top{background:linear-gradient(135deg,#eef2ff 0%,#fff0f5 100%);padding:20px 20px 16px;text-align:center;flex-shrink:0}
+.logo{font-size:24px;font-weight:700;color:var(--pk);letter-spacing:-0.5px}
+.step-label{font-size:11px;color:var(--txt2);margin-top:4px}
+.bar{height:3px;background:var(--border);border-radius:2px;margin-top:12px;overflow:hidden}
+.bar-fill{height:100%;background:var(--pk);border-radius:2px;transition:width .4s ease}
+.body{flex:1;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch}
+.foot{padding:12px 20px 24px;flex-shrink:0;display:flex;gap:10px;background:var(--bg)}
+.btn{flex:1;padding:14px;border:none;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
+.btn:active{transform:scale(.97)}
+.btn-p{background:var(--pk);color:#fff}
+.btn-s{background:var(--card);color:var(--txt);border:1px solid var(--border)}
+.title{font-size:18px;font-weight:600;margin-bottom:6px;line-height:1.4}
+.desc{font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:20px}
+.group{margin-bottom:18px}
+.label{font-size:13px;font-weight:600;margin-bottom:8px;display:block;line-height:1.4}
+.input{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r);font-size:14px;font-family:inherit;background:var(--card);appearance:none;-webkit-appearance:none}
+.input:focus{outline:none;border-color:var(--pk)}
+select.input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%23888' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;font-size:14px;background:var(--card);transition:all .15s;line-height:1.4}
+.opt:active{transform:scale(.98)}
+.opt.on{border-color:var(--pk);background:var(--pk-light)}
+.opt input{display:none}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;position:relative;transition:all .15s}
+.opt.on .dot{border-color:var(--pk)}
+.opt.on .dot::after{content:'';position:absolute;top:3px;left:3px;width:8px;height:8px;border-radius:50%;background:var(--pk)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 14px;border:1px solid var(--border);border-radius:20px;font-size:13px;cursor:pointer;background:var(--card);transition:all .15s;user-select:none}
+.chip:active{transform:scale(.96)}
+.chip.on{border-color:var(--pk);background:var(--pk-bg);color:var(--pk);font-weight:600}
+.stars{display:flex;gap:4px;margin-top:4px}
+.star{font-size:28px;color:var(--border);cursor:pointer;transition:color .1s;user-select:none;line-height:1}
+.star.on{color:var(--pk)}
+.ta{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r);font-size:14px;font-family:inherit;background:var(--card);resize:vertical;min-height:80px}
+.ta:focus{outline:none;border-color:var(--pk)}
+.sep{border:none;border-top:1px solid var(--border);margin:20px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+.card-num{width:28px;height:28px;border-radius:50%;background:var(--pk);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.card-title{font-size:13px;font-weight:600}
+.card-desc{font-size:11px;color:var(--txt2);margin-top:2px}
+.info{background:var(--pk-bg);border-radius:var(--r);padding:12px 14px;font-size:12px;color:#c0446a;line-height:1.6;margin-top:16px}
+.iframe-wrap{flex:1;display:flex;flex-direction:column;background:#fff}
+.iframe-wrap iframe{flex:1;border:none;width:100%}
+.done-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
+.done-icon{font-size:48px;margin-bottom:16px}
+.alert{background:#fee;border:1px solid #fcc;border-radius:var(--r);padding:12px;font-size:12px;color:#a33;margin-bottom:12px;display:none}
+</style>
+</head>
+<body>
+
+<!-- ===== 0. 첫 화면 ===== -->
+<div class="page on" id="p0">
+<div class="top"><div class="logo">원모어</div><div class="step-label">데이트 코스 기반 번들 할인 플랫폼</div></div>
+<div class="body">
+<div class="title">서비스를 체험하고<br>피드백을 남겨주세요</div>
+<div class="desc">총 3단계, 약 10분 소요됩니다.</div>
+<div class="card"><div class="card-num">1</div><div><div class="card-title">기본 정보 & 사전 설문</div><div class="card-desc">약 2분 소요</div></div></div>
+<div class="card"><div class="card-num">2</div><div><div class="card-title">코스 계획 체험</div><div class="card-desc">직접 코스를 만들어보세요</div></div></div>
+<div class="card"><div class="card-num">3</div><div><div class="card-title">사용 후 피드백</div><div class="card-desc">약 3분 소요</div></div></div>
+<div class="info">중간에 나가도 데이터는 자동 저장됩니다.</div>
+</div>
+<div class="foot"><button class="btn btn-p" onclick="go(1)">시작하기</button></div>
+</div>
+
+<!-- ===== 1. 기초 정보 ===== -->
+<div class="page" id="p1">
+<div class="top"><div class="logo">원모어</div><div class="step-label">1단계: 기본 정보</div><div class="bar"><div class="bar-fill" style="width:10%"></div></div></div>
+<div class="body">
+<div class="title">기본 정보</div>
+<div class="group"><span class="label">나이</span><input type="number" class="input" id="f-age" inputmode="numeric" placeholder="나이를 입력해주세요" min="15" max="60"></div>
+<div class="group"><span class="label">성별</span><div class="opts" data-name="gender"><div class="opt" onclick="pick(this)"><div class="dot"></div>남성<input type="radio" name="gender" value="남성"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>여성<input type="radio" name="gender" value="여성"></div></div></div>
+<div class="group"><span class="label">관계</span><div class="opts" data-name="rel"><div class="opt" onclick="pick(this)"><div class="dot"></div>연인<input type="radio" name="rel" value="연인"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>친구<input type="radio" name="rel" value="친구"></div></div></div>
+</div>
+<div class="foot"><button class="btn btn-p" onclick="go(2)">다음</button></div>
+</div>
+
+<!-- ===== 2. 사용 전 설문 (1/2) ===== -->
+<div class="page" id="p2">
+<div class="top"><div class="logo">원모어</div><div class="step-label">1단계: 사전 설문</div><div class="bar"><div class="bar-fill" style="width:20%"></div></div></div>
+<div class="body">
+<div class="title">데이트/약속 패턴</div>
+<div class="group"><span class="label">주 평균 데이트/약속 횟수</span><div class="opts" data-name="freq"><div class="opt" onclick="pick(this)"><div class="dot"></div>1회 미만<input type="radio" name="freq" value="1회 미만"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>1-2회<input type="radio" name="freq" value="1-2회"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>3회 이상<input type="radio" name="freq" value="3회 이상"></div></div></div>
+<div class="group"><span class="label">1회당 평균 방문 장소 개수</span><div class="opts" data-name="visit"><div class="opt" onclick="pick(this)"><div class="dot"></div>1곳<input type="radio" name="visit" value="1곳"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>2-3곳<input type="radio" name="visit" value="2-3곳"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>4곳 이상<input type="radio" name="visit" value="4곳 이상"></div></div></div>
+<div class="group"><span class="label">1회당 평균 소비 비용</span><div class="opts" data-name="budget"><div class="opt" onclick="pick(this)"><div class="dot"></div>3만원 이하<input type="radio" name="budget" value="3만원 이하"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>3-5만원<input type="radio" name="budget" value="3-5만원"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>5-10만원<input type="radio" name="budget" value="5-10만원"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>10만원 이상<input type="radio" name="budget" value="10만원 이상"></div></div></div>
+<div class="group"><span class="label">코스 계획 소요 시간</span><div class="opts" data-name="plantime"><div class="opt" onclick="pick(this)"><div class="dot"></div>10분 이내<input type="radio" name="plantime" value="10분 이내"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>10-30분<input type="radio" name="plantime" value="10-30분"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>30분-1시간<input type="radio" name="plantime" value="30분-1시간"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>1시간 이상<input type="radio" name="plantime" value="1시간 이상"></div></div></div>
+</div>
+<div class="foot"><button class="btn btn-s" onclick="go(1)">이전</button><button class="btn btn-p" onclick="go(3)">다음</button></div>
+</div>
+
+<!-- ===== 3. 사용 전 설문 (2/2) ===== -->
+<div class="page" id="p3">
+<div class="top"><div class="logo">원모어</div><div class="step-label">1단계: 사전 설문</div><div class="bar"><div class="bar-fill" style="width:30%"></div></div></div>
+<div class="body">
+<div class="group"><span class="label">데이트/약속 관련 어려운 점은? (중복선택)</span><div class="chips" data-name="diff"><div class="chip" onclick="chip(this)">장소 찾기 어려움</div><div class="chip" onclick="chip(this)">장소 간 거리 계산</div><div class="chip" onclick="chip(this)">계획 시간이 오래 걸림</div><div class="chip" onclick="chip(this)">여러 곳 예약 불편</div><div class="chip" onclick="chip(this)">비용 부담</div><div class="chip" onclick="chip(this)">매번 같은 곳만 감</div></div></div>
+<hr class="sep">
+<div class="group"><span class="label">코스 계획할 때 가장 중요한 것은? (중복선택)</span><div class="chips" data-name="prio"><div class="chip" onclick="chip(this)">가격/할인</div><div class="chip" onclick="chip(this)">맛/음식 품질</div><div class="chip" onclick="chip(this)">분위기/감성</div><div class="chip" onclick="chip(this)">장소 간 거리</div><div class="chip" onclick="chip(this)">계획 시간 절약</div><div class="chip" onclick="chip(this)">새로운 곳 발견</div></div></div>
+</div>
+<div class="foot"><button class="btn btn-s" onclick="go(2)">이전</button><button class="btn btn-p" onclick="go(4)">코스 계획 체험하기</button></div>
+</div>
+
+<!-- ===== 4. 프로토타입 (iframe) ===== -->
+<div class="page" id="p4">
+<div class="top" style="padding-bottom:10px"><div class="logo">원모어</div><div class="step-label">2단계: 직접 코스를 만들어보세요</div><div class="bar"><div class="bar-fill" style="width:60%"></div></div></div>
+<div class="iframe-wrap">
+<iframe id="proto-iframe" src="about:blank" allow="geolocation"></iframe>
+</div>
+<div class="foot"><button class="btn btn-p" onclick="go(5)">사용 완료 → 피드백으로</button></div>
+</div>
+
+<!-- ===== 5. 사용 후 설문 (1/2) ===== -->
+<div class="page" id="p5">
+<div class="top"><div class="logo">원모어</div><div class="step-label">3단계: 피드백</div><div class="bar"><div class="bar-fill" style="width:75%"></div></div></div>
+<div class="body">
+<div class="title">방금의 경험은 어땠나요?</div>
+<div class="group"><span class="label">이 앱으로 코스 계획에 얼마나 걸렸나요?</span><div class="opts" data-name="posttime"><div class="opt" onclick="pick(this)"><div class="dot"></div>1-3분<input type="radio" name="posttime" value="1-3분"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>3-5분<input type="radio" name="posttime" value="3-5분"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>5-10분<input type="radio" name="posttime" value="5-10분"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>10분 이상<input type="radio" name="posttime" value="10분 이상"></div></div></div>
+<div class="group"><span class="label">추천된 장소들이 마음에 들었나요?</span><div class="stars" id="star-rec" data-val="0"></div></div>
+<div class="group"><span class="label">도보 거리 표시가 도움이 됐나요?</span><div class="stars" id="star-dist" data-val="0"></div></div>
+</div>
+<div class="foot"><button class="btn btn-s" onclick="go(4)">이전</button><button class="btn btn-p" onclick="go(6)">다음</button></div>
+</div>
+
+<!-- ===== 6. 사용 후 설문 (2/2) ===== -->
+<div class="page" id="p6">
+<div class="top"><div class="logo">원모어</div><div class="step-label">3단계: 피드백</div><div class="bar"><div class="bar-fill" style="width:90%"></div></div></div>
+<div class="body">
+<div class="group"><span class="label">할인 서비스가 없어도 이 앱을 사용할 의향이 있나요?</span><div class="opts" data-name="nodiscount"><div class="opt" onclick="pick(this)"><div class="dot"></div>네, 할인 없어도 사용할 것 같아요<input type="radio" name="nodiscount" value="YES"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>할인 없으면 사용 안 할 것 같아요<input type="radio" name="nodiscount" value="할인 없으면 NO"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>할인 있어도 사용 안 할 것 같아요<input type="radio" name="nodiscount" value="할인 있어도 NO"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>잘 모르겠어요<input type="radio" name="nodiscount" value="잘모름"></div></div></div>
+<div class="group"><span class="label">데이트가 아닌 단순 약속(친구, 모임 등)에도 사용할 의향이 있나요?</span><div class="opts" data-name="nondate"><div class="opt" onclick="pick(this)"><div class="dot"></div>네<input type="radio" name="nondate" value="YES"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>데이트 아니면 사용 안 할 것 같아요<input type="radio" name="nondate" value="데이트 아니면 NO"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>잘 모르겠어요<input type="radio" name="nondate" value="잘모름"></div></div></div>
+<div class="group"><span class="label">코스에 장소를 추가할수록 할인이 추가된다면, 추가할 의향은?</span><div class="opts" data-name="addplace"><div class="opt" onclick="pick(this)"><div class="dot"></div>1곳만 (충분함)<input type="radio" name="addplace" value="1곳만"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>2곳까지<input type="radio" name="addplace" value="2곳까지"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>3곳까지<input type="radio" name="addplace" value="3곳까지"></div><div class="opt" onclick="pick(this)"><div class="dot"></div>4곳 이상<input type="radio" name="addplace" value="4곳 이상"></div></div></div>
+<hr class="sep">
+<div class="group"><span class="label">좋았던 점</span><textarea class="ta" id="f-good" placeholder="자유롭게 적어주세요 (선택)"></textarea></div>
+<div class="group"><span class="label">개선할 점</span><textarea class="ta" id="f-bad" placeholder="자유롭게 적어주세요 (선택)"></textarea></div>
+</div>
+<div class="foot"><button class="btn btn-s" onclick="go(5)">이전</button><button class="btn btn-p" id="submit-btn" onclick="submit()">완료</button></div>
+</div>
+
+<!-- ===== 7. 완료 ===== -->
+<div class="page" id="p7">
+<div class="top"><div class="logo">원모어</div></div>
+<div class="done-wrap">
+<div class="done-icon">✨</div>
+<div class="title">감사합니다!</div>
+<div class="desc">소중한 피드백이 원모어를 더 좋은 서비스로 만드는 데 큰 도움이 됩니다.</div>
+</div>
+</div>
+
+<script>
+// ============================================================
+// 설정
+// ============================================================
+var SHEETS_URL = "https://script.google.com/macros/s/AKfycbzPHt-RZwyF-4HCS85eqoftOocdKSLlSh-95zZCHZr_ePrqLLCri0lrl804Z58hUa0/exec";
+
+// ⬇️ 프로토타입 URL을 여기에 입력하세요
+var PROTO_URL = "https://onemore-mvp.vercel.app/?mode=survey";
+// 예: "https://z-unghyun.github.io/onemore-mvp/"
+
+// ============================================================
+// 세션
+// ============================================================
+var sid = localStorage.getItem("om_sid");
+if (!sid) {
+  sid = "s-" + Date.now() + "-" + Math.random().toString(36).substr(2, 6);
+  localStorage.setItem("om_sid", sid);
+}
+var protoStart = 0;
+
+// ============================================================
+// 화면 이동
+// ============================================================
+function go(n) {
+  // 프로토타입 진입 시 iframe 로드 & 시간 기록
+  if (n === 4) {
+    if (PROTO_URL) {
+      var iframe = document.getElementById("proto-iframe");
+      if (iframe.src === "about:blank") iframe.src = PROTO_URL;
+    }
+    protoStart = Date.now();
+  }
+
+  document.querySelectorAll(".page").forEach(function(p) { p.classList.remove("on"); });
+  document.getElementById("p" + n).classList.add("on");
+  window.scrollTo(0, 0);
+
+  // 단계별 자동 저장
+  if (n === 4) savePartial("pre");
+  if (n === 5) savePartial("log");
+}
+
+// ============================================================
+// 라디오 선택
+// ============================================================
+function pick(el) {
+  var wrap = el.closest(".opts");
+  wrap.querySelectorAll(".opt").forEach(function(o) { o.classList.remove("on"); });
+  el.classList.add("on");
+  el.querySelector("input").checked = true;
+}
+
+// ============================================================
+// 칩 (중복선택)
+// ============================================================
+function chip(el) {
+  el.classList.toggle("on");
+}
+
+// ============================================================
+// 별점
+// ============================================================
+function initStars(id) {
+  var wrap = document.getElementById(id);
+  for (var i = 1; i <= 5; i++) {
+    var s = document.createElement("span");
+    s.className = "star";
+    s.textContent = "★";
+    s.setAttribute("data-v", i);
+    wrap.appendChild(s);
+  }
+  wrap.addEventListener("click", function(e) {
+    var star = e.target.closest(".star");
+    if (!star) return;
+    var v = parseInt(star.getAttribute("data-v"));
+    wrap.setAttribute("data-val", v);
+    wrap.querySelectorAll(".star").forEach(function(st, j) {
+      st.classList.toggle("on", j < v);
+    });
+  });
+}
+initStars("star-rec");
+initStars("star-dist");
+
+// ============================================================
+// 데이터 수집
+// ============================================================
+function getRadio(name) {
+  var el = document.querySelector('input[name="' + name + '"]:checked');
+  return el ? el.value : "";
+}
+
+function getChips(name) {
+  var wrap = document.querySelector('[data-name="' + name + '"]');
+  var items = [];
+  wrap.querySelectorAll(".chip.on").forEach(function(c) { items.push(c.textContent.trim()); });
+  return JSON.stringify(items);
+}
+
+function collectAll() {
+  var usageTime = protoStart ? Math.round((Date.now() - protoStart) / 1000) : 0;
+
+  return {
+    sessionId: sid,
+    // 기초 정보
+    age: document.getElementById("f-age").value || "",
+    gender: getRadio("gender"),
+    relationship: getRadio("rel"),
+    // 사전 설문
+    dateFrequency: getRadio("freq"),
+    visitCount: getRadio("visit"),
+    avgBudget: getRadio("budget"),
+    planningTime: getRadio("plantime"),
+    difficulties: getChips("diff"),
+    priorities: getChips("prio"),
+    // 사용 중 로그 (자동)
+    log_regionSelected: "",
+    log_categoryUsed: "",
+    log_scheduleCount: "",
+    log_completed: "true",
+    log_usageTimeSeconds: String(usageTime),
+    // 사후 설문
+    post_planningTime: getRadio("posttime"),
+    post_recommendationRating: document.getElementById("star-rec").getAttribute("data-val"),
+    post_distanceRating: document.getElementById("star-dist").getAttribute("data-val"),
+    post_useWithoutDiscount: getRadio("nodiscount"),
+    post_useForNonDate: getRadio("nondate"),
+    post_additionalPlaces: getRadio("addplace"),
+    post_strengths: document.getElementById("f-good").value || "",
+    post_improvements: document.getElementById("f-bad").value || ""
+  };
+}
+
+// ============================================================
+// 단계별 저장 (이탈 대비)
+// ============================================================
+function savePartial(stage) {
+  try {
+    var data = collectAll();
+    data._stage = stage;
+    localStorage.setItem("om_data", JSON.stringify(data));
+  } catch(e) {}
+}
+
+// ============================================================
+// 최종 제출
+// ============================================================
+function submit() {
+  var btn = document.getElementById("submit-btn");
+  btn.textContent = "저장 중...";
+  btn.disabled = true;
+
+  var data = collectAll();
+
+  fetch(SHEETS_URL, {
+    method: "POST",
+    body: JSON.stringify(data),
+    mode: "no-cors"
+  }).then(function() {
+    localStorage.removeItem("om_data");
+    localStorage.removeItem("om_sid");
+    go(7);
+  }).catch(function() {
+    // no-cors라 에러처럼 보여도 실제로는 전송됨
+    localStorage.removeItem("om_data");
+    localStorage.removeItem("om_sid");
+    go(7);
+  });
+}
+
+// ============================================================
+// 프로토타입 → 부모 통신 (postMessage 수신)
+// ============================================================
+window.addEventListener("message", function(e) {
+  try {
+    var msg = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
+    if (msg.type === "onemore-log") {
+      if (msg.regionSelected !== undefined) localStorage.setItem("om_log_region", msg.regionSelected);
+      if (msg.categoryUsed !== undefined) localStorage.setItem("om_log_category", msg.categoryUsed);
+      if (msg.scheduleCount !== undefined) localStorage.setItem("om_log_schedule", msg.scheduleCount);
+    }
+  } catch(e) {}
+});
+</script>
+
+</body>
+</html>
